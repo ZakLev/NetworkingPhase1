@@ -10,21 +10,21 @@
 
 int main()
 {
-	//Get IP and PORT
+	////Get IP and PORT
 	std::string ip, holdPort;
 	int port;
-	std::cout << "Enter the ip: \n";
-	std::getline(std::cin, ip);
-	std::cout << std::endl;
-	std::cout << "Enter the Port: \n";
-	std::getline(std::cin,holdPort );
-	port = stoi(holdPort);
-	std::cout << std::endl;
+	//std::cout << "Enter the ip: \n";
+	//std::getline(std::cin, ip);
+	//std::cout << std::endl;
+	//std::cout << "Enter the Port: \n";
+	//std::getline(std::cin,holdPort );
+	//port = stoi(holdPort);
+	//std::cout << std::endl;
 	
 	
 
-	//ip = "127.0.0.1";			// IP of server for testing
-	//port = 3333; // port of server for testing
+	ip = "127.0.0.1";			// IP of server for testing
+	port = 3333; // port of server for testing
 	/*WSAData data;
 	WORD ver = MAKEWORD(2, 2);*/
 	int errorCheck = startup();//WSAStartup(ver, &data);
