@@ -146,7 +146,7 @@ int main()
 							std::ostringstream ss;
 
 
-							ss << "SOCKET #" << sock << ": " << buff << "\r\n";
+							ss << "ECHO: SOCKET #" << sock << ": " << buff << "\r\n";
 							 sendMSG = ss.str();
 							send(outSock, sendMSG.c_str(), sendMSG.size() + 1, 0);
 
