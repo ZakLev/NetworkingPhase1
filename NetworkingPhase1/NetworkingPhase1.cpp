@@ -41,7 +41,7 @@ int main()
 	bind(lis, (sockaddr*)&hin, sizeof(hin));
 
 	// listening
-	listen(lis, SOMAXCONN);
+	listen(lis, SOMAXCONN); // amount to listen
 	
 	fd_set ServerMaster;
 	FD_ZERO(&ServerMaster);
@@ -52,7 +52,7 @@ int main()
 	while (serverOn)
 	{
 			fd_set copyServerMaster = ServerMaster;
-		timeval time = {1,1};
+		timeval time = {1,0};
 		int sockCount = select(0, &copyServerMaster, nullptr, nullptr, &time);
 
 		for (int i = 0; i < sockCount; i++)

@@ -73,21 +73,25 @@ int main()
 		{*/
 
 		// Prompt the user for some text
+		std::string check = userInput;
 		if (registered == false && forceCall == true)
 		{
 			userInput = "&register";
 			forceCall = false;
 		}
-		else
-		{
+		
+		else {
 
 
 	startMSG:	std::cout << "Send Message: ";
 
-		std::string check = userInput;
 		std::getline(std::cin, userInput);
 		//	check.erase(check.size() - 1, check.size());
-		
+		if (registered == false)
+		{
+			name = userInput;
+			registered = true;
+		}
 		if (userInput.compare("&register") == 0)
 		{
 			if (registered == true)
@@ -102,7 +106,7 @@ int main()
 			}
 			else
 			{
-				name = userInput;
+				std::cout << "\nAlready registerd!\n";
 				registered = true;
 				userInput = check;
 				goto startMSG;
@@ -111,6 +115,7 @@ int main()
 		}
 
 		}
+		
 
 		if (userInput.size() > 0)		// Make sure the user has typed in something
 		{
