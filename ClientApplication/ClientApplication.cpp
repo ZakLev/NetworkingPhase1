@@ -11,20 +11,22 @@
 int main()
 {
 	////Get IP and PORT
+	bool registered = false;
+	std::string name;
 	std::string ip, holdPort;
 	int port;
-	//std::cout << "Enter the ip: \n";
-	//std::getline(std::cin, ip);
-	//std::cout << std::endl;
-	//std::cout << "Enter the Port: \n";
-	//std::getline(std::cin,holdPort );
-	//port = stoi(holdPort);
-	//std::cout << std::endl;
-	
-	
+	std::cout << "Enter the ip: \n";
+	std::getline(std::cin, ip);
+	std::cout << std::endl;
+	std::cout << "Enter the Port: \n";
+	std::getline(std::cin, holdPort);
+	port = stoi(holdPort);
+	std::cout << std::endl;
 
-	ip = "127.0.0.1";			// IP of server for testing
-	port = 3333; // port of server for testing
+
+
+	//ip = "127.0.0.1";			// IP of server for testing
+	//port = 3333; // port of server for testing
 	/*WSAData data;
 	WORD ver = MAKEWORD(2, 2);*/
 	int errorCheck = startup();//WSAStartup(ver, &data);
@@ -58,17 +60,57 @@ int main()
 		return 0;
 	}
 	//Connected to the server
-	std::cout << "Connected to Server: " << ip << ":" << port << std::endl<<std::endl;
+	std::cout << "Connected to Server: " << ip << ":" << port << std::endl << std::endl;
 	// Do-while loop to send and receive data
 	char buf[4096];
+	//char bufr[4096];
 	std::string userInput;
+	bool forceCall = true;
+	//bool registerd = false;
 	do
 	{
+		/*if (registerd == true)
+		{*/
+
 		// Prompt the user for some text
-		std::cout << "Send Message: ";
-		
+		if (registered == false && forceCall == true)
+		{
+			userInput = "&register";
+			forceCall = false;
+		}
+		else
+		{
+
+
+	startMSG:	std::cout << "Send Message: ";
+
+		std::string check = userInput;
 		std::getline(std::cin, userInput);
+		//	check.erase(check.size() - 1, check.size());
 		
+		if (userInput.compare("&register") == 0)
+		{
+			if (registered == true)
+			{
+
+				std::cout << "\nAlready registerd!\n";
+				//userInput.clear();
+				//userInput.resize(0);
+				userInput = check;
+				goto startMSG;
+				//break;
+			}
+			else
+			{
+				name = userInput;
+				registered = true;
+				userInput = check;
+				goto startMSG;
+				
+			}
+		}
+
+		}
 
 		if (userInput.size() > 0)		// Make sure the user has typed in something
 		{
@@ -84,9 +126,30 @@ int main()
 					// Echo response to console
 					std::cout << "Client: " << std::string(buf, 0, bytesReceived) << std::endl;
 				}
+				else if (bytesReceived == 0)
+				{
+					std::cout << "Connect Broke!\n";
+					//userInput = check;
+					//goto startMSG;
+				}
+				else
+				{
+					std::cout << "RECV failed with error" + WSAGetLastError() << std::endl;
+				}
 			}
+
 		}
 
+		
+
+		/*else
+		{
+			userInput = "&register";
+			int sendResult = send(sock, userInput.c_str(), userInput.size() + 1, 0);
+			ZeroMemory(buf, 4096);
+			int bytesReceived = recv(sock, buf, 4096, 0);
+			registerd = true;
+		}*/
 	} while (userInput.size() > 0);
 
 	// Gracefully close down everything

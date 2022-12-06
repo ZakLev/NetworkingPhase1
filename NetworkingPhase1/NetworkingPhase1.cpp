@@ -12,7 +12,8 @@
 
 int main()
 {
-    
+	std::string usernames[5];
+	int clientAmount = 0;
 	std::cout << "Waiting For Connection\n";
 	 std::string ip = "127.0.0.1";			// Server IP Address
 	int port = 3333;
@@ -50,22 +51,22 @@ int main()
 	bool serverOn = true;
 	while (serverOn)
 	{
-		fd_set copyServerMaster = ServerMaster;
-		int sockCount = select(0, &copyServerMaster, nullptr, nullptr, nullptr);
+			fd_set copyServerMaster = ServerMaster;
+		timeval time = {1,1};
+		int sockCount = select(0, &copyServerMaster, nullptr, nullptr, &time);
 
 		for (int i = 0; i < sockCount; i++)
 		{
 			SOCKET sock = copyServerMaster.fd_array[i];
 			if (sock == lis)
 			{
+
 				SOCKET sockClient = accept(lis, nullptr, nullptr);
-			
+
 				FD_SET(sockClient, &ServerMaster);
-
-				std::string connected = "Hello, The Server is Connected\r\n";
-				//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;
-				send(sockClient, connected.c_str(), connected.size() + 1, 0);
-
+				
+				//std::string welcomeMsg = "Welcome to the Awesome Chat Server!\r\n";
+				//send(sockClient, welcomeMsg.c_str(), welcomeMsg.size() + 1, 0);
 			}
 			else
 			{
@@ -82,19 +83,56 @@ int main()
 				}
 				else
 				{
-					// Check to see if it's a command. \quit kills the server
+					// Check to see if it's a command. &quit kills the server
 					if (buff[0] == '&')
 					{
 						// Is the command quit? 
 						std::string cmd = std::string(buff, bytesIn);
-						if (cmd == "&quit")
+						cmd.erase(cmd.size()-1,cmd.size());
+						//cmd = "&register";
+						if (cmd.compare("&quit")==0)
 						{
 							serverOn = false;
 							break;
 						}
+						else if (cmd.compare("&register") == 0)
+						{
+							std::string connected = "\nPlease Enter A Username: ";
+							//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;
+							send(sock, connected.c_str(), connected.size() + 1, 0);
+							ZeroMemory(buff, 4096);
+							//char buff[4096];
+							int bytesIn = recv(sock, buff, 4096, 0);
+							if (bytesIn > 0)
+							{
+								std::string user = std::string(buff, bytesIn);
+								user.erase(user.size() - 1, user.size());
+								if (clientAmount < 5)
+								{
+
+									usernames[clientAmount] = user;
+									clientAmount++;
+									std::string connected = "\nUsername set to " + user;
+									//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;
+									send(sock, connected.c_str(), connected.size() + 1, 0);
+								}
+								else
+								{
+									std::string connected = "\nToo many Users Connected! ";
+									//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;
+									send(sock, connected.c_str(), connected.size() + 1, 0);
+								}
+
+
+							}
+						}
+						
+
+					
 
 						// Unknown command
 						continue;
+						//goto start;
 					}
 
 					// Send message to other clients, and definiately NOT the listening socket
@@ -102,24 +140,26 @@ int main()
 					for (int i = 0; i < ServerMaster.fd_count; i++)
 					{
 						SOCKET outSock = ServerMaster.fd_array[i];
-						if (outSock != lis && outSock != sock)
-						{
-						 std::ostringstream ss;
-							
+						std::string sendMSG;
+						//if (outSock != sock )//&& outSock != lis)
+						//{
+							std::ostringstream ss;
+
 
 							ss << "SOCKET #" << sock << ": " << buff << "\r\n";
-							std::string sendMSG = ss.str();
-
+							 sendMSG = ss.str();
 							send(outSock, sendMSG.c_str(), sendMSG.size() + 1, 0);
-						
-						}
+
+
+						//}
 					}
 				}
 			}
 
 		}
-
 	}
+
+	//}
 	////wait
 	//sockaddr_in client;
 	//int clientSize = sizeof(client);
@@ -185,7 +225,7 @@ int main()
 	}
 
 	// Gracefully close down everything
-	//closesocket(clientSock);
+    //closesocket(clientSock);
 	WSACleanup();
 	system("pause");
 	return 0;
