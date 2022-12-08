@@ -263,7 +263,7 @@ int main()
 		FD_CLR(sock, &ServerMaster);
 		closesocket(sock);
 	}
-
+	writeFile("Server Closed :(");
 	// Gracefully close down everything
     //closesocket(clientSock);
 	WSACleanup();
