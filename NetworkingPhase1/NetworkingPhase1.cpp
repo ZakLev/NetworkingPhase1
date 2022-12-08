@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
 #include <sstream>
 #include <WS2tcpip.h>
 #include "../definitions.h"
@@ -15,21 +16,26 @@ int main()
 	std::string usernames[6];
 	usernames[0] = "Server";
 	int clientAmount = 1;
-	std::cout << "Waiting For Connection\n";
 	 std::string ip = "127.0.0.1";			// Server IP Address
 	int port = 3333;
-    
+	std::string sOut;
+	sOut = usernames[0] + ": Waiting For Connection\n" + ip + "\n" + std::to_string(port) + "\n";
+	std::cout << sOut;
+
 	int errorCheck = startup();
     if (errorCheck != 0)
     {
-        std::cerr << "\nCan't start Winsock, Exit" << std::endl;
+
+		sOut + usernames[0] +": Can't start Winsock, Exit\n";
+		std::cout << sOut;
         return 0;
     }
 	// Create socket
 	SOCKET lis = socket(AF_INET, SOCK_STREAM, 0);
 	if (lis == INVALID_SOCKET)
 	{
-		std::cerr << "\nCan't create socket, Exit" << std::endl;
+		sOut = usernames[0] + "Can't create socket, Exit\n";
+		std::cout << sOut;
 		return 0;
 	}
 
@@ -66,8 +72,9 @@ int main()
 
 				FD_SET(sockClient, &ServerMaster);
 				
-				//std::string welcomeMsg = "Welcome to the Awesome Chat Server!\r\n";
-				//send(sockClient, welcomeMsg.c_str(), welcomeMsg.size() + 1, 0);
+				std::string welcomeMsg = "Welcome The Client has Connected to the Server!\n";
+
+				send(sockClient, welcomeMsg.c_str(), welcomeMsg.size() + 1, 0);
 			}
 			else
 			{
@@ -113,6 +120,10 @@ int main()
 							}
 								sendMSG = ss.str();
 								send(sock, sendMSG.c_str(), sendMSG.size() + 1, 0);
+
+						}
+						else if (cmd.compare("&getlog") == 0)
+						{
 
 						}
 						else if (cmd.compare("&register") == 0)

@@ -67,6 +67,12 @@ int main()
 	std::string userInput;
 	bool forceCall = true;
 	//bool registerd = false;
+	int bytesReceived = recv(sock, buf, 4096, 0);
+	if (bytesReceived > 0)
+	{
+		// Echo response to console
+		std::cout << std::string(buf, 0, bytesReceived) << std::endl;
+	}
 	do
 	{
 		/*if (registerd == true)
@@ -130,7 +136,7 @@ int main()
 				if (bytesReceived > 0)
 				{
 					// Echo response to console
-					std::cout << "Client: " << std::string(buf, 0, bytesReceived) << std::endl;
+					std::cout << std::string(buf, 0, bytesReceived) << std::endl;
 				}
 				else if (bytesReceived == 0)
 				{
