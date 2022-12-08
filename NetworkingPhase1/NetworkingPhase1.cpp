@@ -19,8 +19,8 @@ void clearFile();
 int main()
 {
 	clearFile();
-	std::vector<std::string> usernames(6);
-	usernames[0] = "Server";
+	std::vector<std::string> usernames;
+	usernames.push_back("Server");
 	int clientAmount = 1;
 	 std::string ip = "127.0.0.1";			// Server IP Address
 	int port = 3333;
@@ -139,7 +139,7 @@ int main()
 								/*if (outSock != lis)
 								{*/
 
-								ss << "SOCKET #" << outSock << ": " << usernames[i] << std::endl;
+								ss << i <<". SOCKET #" << outSock << ": " << usernames[i] << std::endl;
 								//}
 							}
 								sendMSG = ss.str();
@@ -179,7 +179,8 @@ int main()
 								if (clientAmount < 5)
 								{
 
-									usernames[clientAmount] = user;
+									//usernames[clientAmount] = user;
+									usernames.push_back(user);
 									clientAmount++;
 									std::string connected = "\nUsername set to " + user;
 									//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;

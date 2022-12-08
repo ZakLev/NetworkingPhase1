@@ -1,18 +1,14 @@
 Welcome The Client has Connected to the Server!
 
 
-Username set to is
-ECHO: SOCKET #88 is: Hi
+Username set to Ted
+0. SOCKET #200: Server
+1. SOCKET #208: Ted
 
-SOCKET #84: Server
-SOCKET #88: is
+ECHO: SOCKET #208 Ted: yeahhhh
 
-ECHO: SOCKET #88 is: bye
+SOCKET #200: Server has been removed!
 
-Successfully transfered the Log File! :)
-
-SOCKET #84: Server has been removed!
-
-SOCKET #84: Server has been removed!
-SOCKET #88: is has been removed!
+SOCKET #200: Server has been removed!
+SOCKET #208: Ted has been removed!
 
