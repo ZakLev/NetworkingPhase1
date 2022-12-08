@@ -75,7 +75,7 @@ int main()
 			{
 
 				SOCKET sockClient = accept(lis, nullptr, nullptr);
-
+				
 				FD_SET(sockClient, &ServerMaster);
 				
 				std::string welcomeMsg = "Welcome The Client has Connected to the Server!\n";
@@ -115,12 +115,16 @@ int main()
 
 								/*if (outSock != lis)
 								{*/
+								if (outSock == sock)
+								{
 
 								ss << "SOCKET #" << outSock << ": " << usernames[i] << " has been removed!" << std::endl;
 								sendMSG = ss.str();
 								send(sock, sendMSG.c_str(), sendMSG.size() + 1, 0);
 								usernames.erase(std::next(usernames.begin(),i),std::next( usernames.begin(), i));
 								writeFile(sendMSG);
+								FD_CLR(sock, &ServerMaster);
+								}
 
 								//}
 							}
@@ -193,6 +197,8 @@ int main()
 									//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;
 									send(sock, connected.c_str(), connected.size() + 1, 0);
 									writeFile(connected);
+									FD_CLR(sock, &ServerMaster);
+									
 								}
 
 
