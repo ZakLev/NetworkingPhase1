@@ -72,6 +72,7 @@ int main()
 		/*if (registerd == true)
 		{*/
 
+		startInput:
 		// Prompt the user for some text
 		std::string check = userInput;
 		if (registered == false && forceCall == true)
@@ -143,6 +144,10 @@ int main()
 				}
 			}
 
+		}
+		else
+		{
+			goto startInput;
 		}
 
 		
