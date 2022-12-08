@@ -3,14 +3,19 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
 #include <WS2tcpip.h>
 #include "../definitions.h"
 #include "../platform.h"
 #pragma comment(lib,"WS2_32")//necessary for linkers
 
+
+void writeFile(std::string line, std::string name);
+
 int main()
 {
 	////Get IP and PORT
+	
 	bool registered = false;
 	std::string name;
 	std::string ip, holdPort;
@@ -66,6 +71,8 @@ int main()
 	//char bufr[4096];
 	std::string userInput;
 	bool forceCall = true;
+	bool logFile = false;
+	bool quit = false;
 	//bool registerd = false;
 	int bytesReceived = recv(sock, buf, 4096, 0);
 	if (bytesReceived > 0)
@@ -90,6 +97,7 @@ int main()
 		else {
 
 
+	//std::atexit(exiting);
 	startMSG:	std::cout << "Send Message: ";
 
 		std::getline(std::cin, userInput);
@@ -122,6 +130,14 @@ int main()
 		}
 
 		}
+		if (userInput.compare("&getlog") == 0)
+		{
+			logFile = true;
+		}
+		if (userInput.compare("&quit") == 0)
+		{
+			quit = true;
+		}
 		
 
 		if (userInput.size() > 0)		// Make sure the user has typed in something
@@ -136,7 +152,18 @@ int main()
 				if (bytesReceived > 0)
 				{
 					// Echo response to console
-					std::cout << std::string(buf, 0, bytesReceived) << std::endl;
+					if (logFile == true)
+					{
+						writeFile(buf, name);
+						logFile = false;
+						std::cout << "File logged Successfully!" << std::endl;
+
+					}
+					else
+					{
+						
+						std::cout << std::string(buf, 0, bytesReceived) << std::endl;
+					}
 				}
 				else if (bytesReceived == 0)
 				{
@@ -151,7 +178,7 @@ int main()
 			}
 
 		}
-		else
+		else if(quit == false)
 		{
 			goto startInput;
 		}
@@ -166,16 +193,33 @@ int main()
 			int bytesReceived = recv(sock, buf, 4096, 0);
 			registerd = true;
 		}*/
-	} while (userInput.size() > 0);
+	} while (userInput.size() > 0 && quit == false);
 
 	// Gracefully close down everything
+	
 	closesocket(sock);
 	WSACleanup();
 	return 0;
 }
 
 
+void writeFile(std::string line, std::string name)
+{
+	std::ofstream outFile;
+	std::string fileName = name + "Log.txt";
+	outFile.open(fileName);//new File not replace
+	if (outFile.is_open())
+	{
+		outFile <<std::endl << line << std::endl;
+		outFile.close();
+	}
+	else
+	{
+		std::cout << "Failed to Open/Write to File\n";
+	}
 
+
+}
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu

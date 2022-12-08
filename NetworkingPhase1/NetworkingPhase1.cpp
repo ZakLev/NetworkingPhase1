@@ -8,12 +8,18 @@
 #include <WS2tcpip.h>
 #include "../definitions.h"
 #include "../platform.h"
+#include <vector>
 
 #pragma comment (lib, "ws2_32.lib")
-
+//std::ifstream inFile;
+//std::ofstream outFile;
+bool readFile(std::string& logLines);
+void writeFile(std::string line);
+void clearFile();
 int main()
 {
-	std::string usernames[6];
+	clearFile();
+	std::vector<std::string> usernames(6);
 	usernames[0] = "Server";
 	int clientAmount = 1;
 	 std::string ip = "127.0.0.1";			// Server IP Address
@@ -21,7 +27,7 @@ int main()
 	std::string sOut;
 	sOut = usernames[0] + ": Waiting For Connection\n" + ip + "\n" + std::to_string(port) + "\n";
 	std::cout << sOut;
-
+	
 	int errorCheck = startup();
     if (errorCheck != 0)
     {
@@ -75,6 +81,7 @@ int main()
 				std::string welcomeMsg = "Welcome The Client has Connected to the Server!\n";
 
 				send(sockClient, welcomeMsg.c_str(), welcomeMsg.size() + 1, 0);
+				writeFile(welcomeMsg);
 			}
 			else
 			{
@@ -100,8 +107,25 @@ int main()
 						//cmd = "&register";
 						if (cmd.compare("&quit")==0)
 						{
-							serverOn = false;
-							break;
+							std::string sendMSG;
+							std::ostringstream ss;
+							for (int i = 0; i < ServerMaster.fd_count; i++)
+							{
+								SOCKET outSock = ServerMaster.fd_array[i];
+
+								/*if (outSock != lis)
+								{*/
+
+								ss << "SOCKET #" << outSock << ": " << usernames[i] << " has been removed!" << std::endl;
+								sendMSG = ss.str();
+								send(sock, sendMSG.c_str(), sendMSG.size() + 1, 0);
+								usernames.erase(std::next(usernames.begin(),i),std::next( usernames.begin(), i));
+								writeFile(sendMSG);
+
+								//}
+							}
+							//serverOn = false;
+							//break;
 						}
 						else if (cmd.compare("&getlist") == 0)
 						{
@@ -120,11 +144,25 @@ int main()
 							}
 								sendMSG = ss.str();
 								send(sock, sendMSG.c_str(), sendMSG.size() + 1, 0);
+								writeFile(sendMSG);
 
 						}
 						else if (cmd.compare("&getlog") == 0)
 						{
-
+							std::string logLines;
+							if (readFile(std::ref(logLines)))
+							{
+								send(sock, logLines.c_str(), logLines.size() + 1, 0);
+								logLines = "Successfully transfered the Log File! :)\n";
+								//send(sock, logLines.c_str(), logLines.size() + 1, 0);
+								writeFile(logLines);
+							}
+							else
+							{
+								logLines = "Failed to Open/Read File! :(\n";
+								send(sock, logLines.c_str(), logLines.size() + 1, 0);
+								writeFile(logLines);
+							}
 						}
 						else if (cmd.compare("&register") == 0)
 						{
@@ -146,12 +184,14 @@ int main()
 									std::string connected = "\nUsername set to " + user;
 									//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;
 									send(sock, connected.c_str(), connected.size() + 1, 0);
+									writeFile(connected);
 								}
 								else
 								{
 									std::string connected = "\nToo many Users Connected! ";
 									//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;
 									send(sock, connected.c_str(), connected.size() + 1, 0);
+									writeFile(connected);
 								}
 
 
@@ -182,6 +222,7 @@ int main()
 							ss << "ECHO: SOCKET #" << sock << " "<<usernames[i]<< ": " << buff << "\r\n";
 							 sendMSG = ss.str();
 							send(outSock, sendMSG.c_str(), sendMSG.size() + 1, 0);
+							writeFile(sendMSG);
 							}
 
 
@@ -193,49 +234,7 @@ int main()
 		}
 	}
 
-	//}
-	////wait
-	//sockaddr_in client;
-	//int clientSize = sizeof(client);
-	//
-	//SOCKET clientSock = accept(lis, (sockaddr*)&client, &clientSize);
-	//
-	//char host[NI_MAXHOST];
-	//char service[NI_MAXSERV];
-
-	//ZeroMemory(host, NI_MAXHOST);
-	//ZeroMemory(service, NI_MAXSERV);
-
-	//if (getnameinfo((sockaddr*)&client, sizeof(client), host, NI_MAXHOST, service, NI_MAXSERV, 0) == 0)
-	//{
-	//	std::cout << host << "Connected on Port: " << service << std::endl;
-	//}
-	//else
-	//{
-	//	inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
-	//	std::cout << host << "Connected on Port: " << ntohs(client.sin_port) << std::endl;
-	//}
-	//closesocket(lis);
-
-	//char buff[4096];// = { 0, };
-	//while (true)
-	//{
-	//	ZeroMemory(buff, 4096);
-	//	int bytes = recv(clientSock, buff, 4096, 0);
-	//	if (bytes == SOCKET_ERROR)
-	//	{
-	//		std::cerr << "\nError in recV, Exit" << std::endl;
-	//		break;
-	//	}
-	//	if (bytes == 0)
-	//	{
-	//		std::cout << "\nDisconnected" << std::endl;
-	//		break;
-	//	}
-	//	std::cout << "Client(" << host << "): " << std::string(buff, 0, bytes) << std::endl;
-
-	//	send(clientSock, buff, bytes + 1, 0);
-	//}
+	
 
 	// Remove the listening socket from the master file descriptor set and close it
 	// to prevent anyone else trying to connect.
@@ -252,7 +251,7 @@ int main()
 
 		// Send the goodbye message
 		send(sock, LeaveMSG.c_str(), LeaveMSG.size() + 1, 0);
-
+		writeFile(LeaveMSG);
 		// Remove it from the master file list and close the socket
 		FD_CLR(sock, &ServerMaster);
 		closesocket(sock);
@@ -264,8 +263,82 @@ int main()
 	system("pause");
 	return 0;
 }
+bool readFile(std::string& logLines)
+{
+	bool fileRead = false;
+
+	std::vector<std::string> logFile;
+	std::ifstream inFile;
+	inFile.open("ServerLog.txt");
+	if (inFile.is_open())
+	{
+		//fileRead = true;
+			std::string line;
+		while (std::getline(inFile, line))
+		{
+			//getline(inFile, line);
+		/*for (std::string line; getline(inFile, line);)
+		{*/
+			std::istringstream iss(line);
+			logFile.push_back(line);
+			if (fileRead == false && line.compare("")!=0)
+			{
+				fileRead = true;
+			}
+		//}
+		}
+		inFile.close();
+		std::ostringstream ss;
+		for (std::string l : logFile)
+		{
+			ss << l << std::endl;
+		}
+		logLines = ss.str();
+	}
+	return fileRead;
+}
+void clearFile()
+{
+	std::ofstream outFile;
+	outFile.open("ServerLog.txt");
+	if (outFile.is_open())
+	{
+		outFile.clear();
+	}
+
+}
+void writeFile(std::string line)
+{
+	std::ofstream outFile;
+	
+	outFile.open("ServerLog.txt",std::ios::app);
+	if (outFile.is_open())
+	{
+		/*std::string read;
+		if (readFile(std::ref(read)))
+		{
+
+		std::ostringstream ss;
+		ss << read << std::endl << line;
+		outFile << ss.str();
+		}
+		else
+		{*/
+			outFile << line << std::endl;
+
+		//}
 
 
+
+		outFile.close();
+	}
+	else
+	{
+		std::cout << "Failed to Open/Write to File\n";
+	}
+
+
+}
 
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

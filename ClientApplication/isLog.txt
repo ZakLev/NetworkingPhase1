@@ -1,0 +1,13 @@
+
+Welcome The Client has Connected to the Server!
+
+
+Username set to is
+ECHO: SOCKET #88 is: Hi
+
+SOCKET #84: Server
+SOCKET #88: is
+
+ECHO: SOCKET #88 is: bye
+
+
