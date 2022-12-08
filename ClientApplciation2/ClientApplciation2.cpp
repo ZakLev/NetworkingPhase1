@@ -207,7 +207,7 @@ void writeFile(std::string line, std::string name)
 {
 	std::ofstream outFile;
 	std::string fileName = name + "Log.txt";
-	outFile.open(fileName);
+	outFile.open(fileName);//new File not replace
 	if (outFile.is_open())
 	{
 		outFile << std::endl << line << std::endl;
