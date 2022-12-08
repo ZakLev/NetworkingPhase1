@@ -12,8 +12,9 @@
 
 int main()
 {
-	std::string usernames[5];
-	int clientAmount = 0;
+	std::string usernames[6];
+	usernames[0] = "Server";
+	int clientAmount = 1;
 	std::cout << "Waiting For Connection\n";
 	 std::string ip = "127.0.0.1";			// Server IP Address
 	int port = 3333;
@@ -95,6 +96,25 @@ int main()
 							serverOn = false;
 							break;
 						}
+						else if (cmd.compare("&getlist") == 0)
+						{
+							
+							std::string sendMSG;
+								std::ostringstream ss;
+							for (int i = 0; i < ServerMaster.fd_count; i++)
+							{
+								SOCKET outSock = ServerMaster.fd_array[i];
+
+								/*if (outSock != lis)
+								{*/
+
+								ss << "SOCKET #" << outSock << ": " << usernames[i] << std::endl;
+								//}
+							}
+								sendMSG = ss.str();
+								send(sock, sendMSG.c_str(), sendMSG.size() + 1, 0);
+
+						}
 						else if (cmd.compare("&register") == 0)
 						{
 							std::string connected = "\nPlease Enter A Username: ";
@@ -145,10 +165,13 @@ int main()
 						//{
 							std::ostringstream ss;
 
+							if (outSock == sock)
+							{
 
-							ss << "ECHO: SOCKET #" << sock << ": " << buff << "\r\n";
+							ss << "ECHO: SOCKET #" << sock << " "<<usernames[i]<< ": " << buff << "\r\n";
 							 sendMSG = ss.str();
 							send(outSock, sendMSG.c_str(), sendMSG.size() + 1, 0);
+							}
 
 
 						//}
