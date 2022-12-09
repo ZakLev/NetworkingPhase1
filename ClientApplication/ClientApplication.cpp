@@ -11,7 +11,7 @@
 
 
 void writeFile(std::string line, std::string name);
-
+void DisplayErrorInfo();
 int main()
 {
 	////Get IP and PORT
@@ -38,13 +38,15 @@ int main()
 	if (errorCheck != 0)
 	{
 		std::cerr << "Can't start Winsock, Err #" << errorCheck << std::endl;
+		DisplayErrorInfo();
 		return 0;
 	}
 	// Create socket
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET)
 	{
-		std::cerr << "Can't create socket, Err #" << WSAGetLastError() << std::endl;
+		//std::cerr << "Can't create socket, Err #" << WSAGetLastError() << std::endl;
+		DisplayErrorInfo();
 		WSACleanup();
 		return 0;
 	}
@@ -59,7 +61,8 @@ int main()
 	int connResult = connect(sock, (sockaddr*)&hint, sizeof(hint));
 	if (connResult == SOCKET_ERROR)
 	{
-		std::cerr << "Can't connect to server, Err #" << WSAGetLastError() << std::endl;
+		//std::cerr << "Can't connect to server, Err #" << WSAGetLastError() << std::endl;
+		DisplayErrorInfo();
 		closesocket(sock);
 		WSACleanup();
 		return 0;
@@ -173,7 +176,8 @@ int main()
 				}
 				else
 				{
-					std::cout << "RECV failed with error" + WSAGetLastError() << std::endl;
+					//std::cout << "RECV failed with error" + WSAGetLastError() << std::endl;
+					DisplayErrorInfo();
 				}
 			}
 
@@ -218,6 +222,20 @@ void writeFile(std::string line, std::string name)
 		std::cout << "Failed to Open/Write to File\n";
 	}
 
+
+}
+
+void DisplayErrorInfo()
+{
+	wchar_t* errorMessage = NULL;
+	FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		FORMAT_MESSAGE_FROM_SYSTEM |
+		FORMAT_MESSAGE_IGNORE_INSERTS, NULL,
+		WSAGetLastError(), MAKELANGID(
+			LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPWSTR)&errorMessage, 0, NULL);
+	fprintf(stderr, "%S\n", errorMessage);
+	LocalFree(errorMessage);
 
 }
 
