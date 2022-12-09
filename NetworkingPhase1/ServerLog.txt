@@ -1,0 +1,8 @@
+Welcome The Client has Connected to the Server!
+
+
+Username set to Why
+ECHO: SOCKET #172 Why: Hello
+
+SOCKET #172: Why has been removed!
+

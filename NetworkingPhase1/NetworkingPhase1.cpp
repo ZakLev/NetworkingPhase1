@@ -16,6 +16,7 @@
 bool readFile(std::string& logLines);
 void writeFile(std::string line);
 void clearFile();
+void DisplayErrorInfo();
 int main()
 {
 	clearFile();
@@ -51,10 +52,12 @@ int main()
 	hin.sin_port = htons(port);
 	inet_pton(AF_INET, ip.c_str(), &hin.sin_addr);
 
-	bind(lis, (sockaddr*)&hin, sizeof(hin));
+	if (bind(lis, (sockaddr*)&hin, sizeof(hin)) == SOCKET_ERROR)
+		DisplayErrorInfo();
 
 	// listening
-	listen(lis, SOMAXCONN); // amount to listen
+	if (listen(lis, SOMAXCONN) == SOCKET_ERROR) // amount to pssible to connect
+		DisplayErrorInfo();
 	
 	fd_set ServerMaster;
 	FD_ZERO(&ServerMaster);
@@ -71,11 +74,14 @@ int main()
 		for (int i = 0; i < sockCount; i++)
 		{
 			SOCKET sock = copyServerMaster.fd_array[i];
+			if (sock == SOCKET_ERROR)
+				DisplayErrorInfo();
 			if (sock == lis)
 			{
 
 				SOCKET sockClient = accept(lis, nullptr, nullptr);
-				
+				if(sockClient == SOCKET_ERROR)
+					DisplayErrorInfo();
 				FD_SET(sockClient, &ServerMaster);
 				
 				std::string welcomeMsg = "Welcome The Client has Connected to the Server!\n";
@@ -139,7 +145,8 @@ int main()
 							for (int i = 0; i < ServerMaster.fd_count; i++)
 							{
 								SOCKET outSock = ServerMaster.fd_array[i];
-
+								if (outSock == SOCKET_ERROR)
+									DisplayErrorInfo();
 								/*if (outSock != lis)
 								{*/
 
@@ -231,7 +238,8 @@ int main()
 							send(outSock, sendMSG.c_str(), sendMSG.size() + 1, 0);
 							writeFile(sendMSG);
 							}
-
+							if (outSock == SOCKET_ERROR)
+								DisplayErrorInfo();
 
 						//}
 					}
@@ -344,6 +352,19 @@ void writeFile(std::string line)
 		std::cout << "Failed to Open/Write to File\n";
 	}
 
+
+}
+void DisplayErrorInfo()
+{
+	wchar_t* errorMessage = NULL;
+	FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		FORMAT_MESSAGE_FROM_SYSTEM |
+		FORMAT_MESSAGE_IGNORE_INSERTS, NULL,
+		WSAGetLastError(), MAKELANGID(
+			LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPWSTR)&errorMessage, 0, NULL);
+	fprintf(stderr, "%S\n", errorMessage);
+	LocalFree(errorMessage);
 
 }
 
