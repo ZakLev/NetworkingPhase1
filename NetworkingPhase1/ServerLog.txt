@@ -1,22 +1,18 @@
 Welcome The Client has Connected to the Server!
 
 
-Username set to Ja
+Username set to Ian
 Welcome The Client has Connected to the Server!
 
 
-Username set to Rule
-0. SOCKET #208: Server
+Username set to Anothony
+0. SOCKET #200: Server
 
-1. SOCKET #212: Ja
+1. SOCKET #204: Ian
 
-2. SOCKET #220: Rule
+2. SOCKET #208: Anothony
 
-SOCKET #212: Ja has been removed!
+0. SOCKET #200: Server
 
-0. SOCKET #208: Server
-
-1. SOCKET #220: Rule
-
-SOCKET #220: Rule has been removed!
+1. SOCKET #208: Ian
 
