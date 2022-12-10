@@ -1,44 +1,10 @@
 Welcome The Client has Connected to the Server!
 
 
-Username set to Kek
-Welcome The Client has Connected to the Server!
+Username set to Hi
+ECHO: SOCKET #180 Hi: I amHi
 
+Successfully transfered the Log File! :)
 
-Username set to Jim
-ECHO: SOCKET #208 Kek: Hi
+SOCKET #180: Hi has been removed!
 
-Welcome The Client has Connected to the Server!
-
-
-Username set to Juicy
-ECHO: SOCKET #220 Juicy: I am Juice
-
-0. SOCKET #204: Server
-
-1. SOCKET #208: Kek
-
-2. SOCKET #216: Jim
-
-3. SOCKET #220: Juicy
-
-Welcome The Client has Connected to the Server!
-
-
-Username set to Tom
-ECHO: SOCKET #224 Tom: I am Tim
-
-0. SOCKET #204: Server
-
-1. SOCKET #208: Kek
-
-2. SOCKET #216: Jim
-
-3. SOCKET #220: Juicy
-
-4. SOCKET #224: Tom
-
-Welcome The Client has Connected to the Server!
-
-
-Too many Users Connected! 

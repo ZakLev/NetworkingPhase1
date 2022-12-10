@@ -197,7 +197,7 @@ int main()
 								send(sock, MsgSize.c_str(), maxSize, 0);
 								 std::this_thread::sleep_for(std::chrono::milliseconds(50));
 								send(sock, sendMSG.c_str(), sendMSG.size() + 1, 0);
-								 //std::this_thread::sleep_for(std::chrono::milliseconds(50));
+								// std::this_thread::sleep_for(std::chrono::milliseconds(50));
 								writeFile(sendMSG);
 								}
 								
