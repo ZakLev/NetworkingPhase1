@@ -122,13 +122,13 @@ int main()
 				else
 				{
 					// Check to see if it's a command. &quit kills the server
-					if (buff[0] == '&')
+					if (buff[0] == '$')
 					{
 						// Is the command quit? 
 						std::string cmd = std::string(buff, bytesIn);
 						cmd.erase(cmd.size()-1,cmd.size());
 						//cmd = "&register";
-						if (cmd.compare("&quit")==0)
+						if (cmd.compare("$quit")==0)
 						{
 							std::string sendMSG;
 							std::ostringstream ss;
@@ -166,7 +166,7 @@ int main()
 							//serverOn = false;
 							//break;
 						}
-						else if (cmd.compare("&getlist") == 0)
+						else if (cmd.compare("$getlist") == 0)
 						{
 							//Send Loading MSG
 							std::string Msg = "Sending List of Users...\n";
@@ -210,7 +210,7 @@ int main()
 							
 
 						}
-						else if (cmd.compare("&getlog") == 0)
+						else if (cmd.compare("$getlog") == 0)
 						{
 							std::string logLines;
 							//if (readFile(std::ref(logLines)))
@@ -248,7 +248,7 @@ int main()
 								}
 						
 						}
-						else if (cmd.compare("&register") == 0)
+						else if (cmd.compare("$register") == 0)
 						{
 							std::string connected = "\nPlease Enter A Username: ";
 							//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;

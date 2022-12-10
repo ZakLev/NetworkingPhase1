@@ -103,7 +103,7 @@ int main()
 		std::string check = userInput;
 		if (registered == false && forceCall == true)
 		{
-			userInput = "&register";
+			userInput = "$register";
 			forceCall = false;
 		}
 		else {
@@ -125,7 +125,7 @@ int main()
 			name = userInput;
 			registered = true;
 		}
-		if (userInput.compare("&register") == 0)
+		if (userInput.compare("$register") == 0)
 		{
 			if (registered == true)
 			{
@@ -148,15 +148,15 @@ int main()
 		}
 
 		}
-		if (userInput.compare("&getlog") == 0)
+		if (userInput.compare("$getlog") == 0)
 		{
 			logFile = true;
 		}
-		else if (userInput.compare("&quit") == 0)
+		else if (userInput.compare("$quit") == 0)
 		{
 			quit = true;
 		}
-		else if (userInput.compare("&getlist") == 0)
+		else if (userInput.compare("$getlist") == 0)
 		{
 			list = true;
 		}
