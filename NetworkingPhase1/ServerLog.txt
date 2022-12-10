@@ -1,10 +1,14 @@
 Welcome The Client has Connected to the Server!
 
 
-Username set to Hi
-ECHO: SOCKET #180 Hi: I amHi
+Username set to Jim
+Welcome The Client has Connected to the Server!
 
-Successfully transfered the Log File! :)
 
-SOCKET #180: Hi has been removed!
+Username set to Tim
+0. SOCKET #204: Server
+
+1. SOCKET #216: Tim
+
+SOCKET #216: Tim has been removed!
 

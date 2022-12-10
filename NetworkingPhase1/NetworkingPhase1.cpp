@@ -116,6 +116,14 @@ int main()
 				if (bytesIn <= 0)
 				{
 					// Drop the client
+					for (int i = 0; i < userSockets.size(); i++)//Remove From List
+					{
+						if (sock == userSockets[i])
+						{
+							usernames.erase(usernames.begin() + i);
+							userSockets.erase(userSockets.begin() + i);
+						}
+					}
 					closesocket(sock);
 					FD_CLR(sock, &ServerMaster);
 				}
@@ -265,6 +273,18 @@ int main()
 							int bytesIn = recv(sock, buff2, buf+1, 0);
 							if (bytesIn > 0)
 							{
+								//for (int i = 0; i < usernames.size(); i++)//Get Rid of Disconnected Users that are at the back
+								//{
+								//	if (ServerMaster.fd_array[i] == NULL || ServerMaster.fd_array[i] != userSockets[i])
+								//	{
+								//		usernames.erase(usernames.begin() + i);
+								//		userSockets.erase(userSockets.begin() + i);
+								//		if (ServerMaster.fd_array[i] != NULL)
+								//		{
+								//			i--;
+								//		}
+								//	}
+								//}
 								std::string user = std::string(buff2, bytesIn);
 								user.erase(user.size() - 1, user.size());
 								if (clientAmount < 5)// Max Clients Allowed 3 - the fourth will be kicked 
