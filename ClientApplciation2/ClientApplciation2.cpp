@@ -250,7 +250,7 @@ int main()
 					{
 						std::string line = std::string(buf, 0, bytesReceived);
 						std::cout << line << std::endl;
-						if (line.compare("\nToo many Users Connected!\n"))
+						if (line.compare("\nToo many Users Connected!\n")==0)
 							quit = true;
 					}
 				}
