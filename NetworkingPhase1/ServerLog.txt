@@ -1,8 +1,15 @@
 Welcome The Client has Connected to the Server!
 
 
-Username set to Why
-ECHO: SOCKET #172 Why: Hello
+Username set to How
+ECHO: SOCKET #216 How: Hi
 
-SOCKET #172: Why has been removed!
+ECHO: SOCKET #216 How: How are you
+
+0. SOCKET #208: Server
+1. SOCKET #216: How
+
+Successfully transfered the Log File! :)
+
+SOCKET #216: How has been removed!
 

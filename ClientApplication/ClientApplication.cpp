@@ -70,19 +70,23 @@ int main()
 	//Connected to the server
 	std::cout << "Connected to Server: " << ip << ":" << port << std::endl << std::endl;
 	// Do-while loop to send and receive data
-	char buf[4096];
+	//char buf[4096];
 	//char bufr[4096];
 	std::string userInput;
 	bool forceCall = true;
 	bool logFile = false;
 	bool quit = false;
 	//bool registerd = false;
-	int bytesReceived = recv(sock, buf, 4096, 0);
+	char buff[1];
+	int bytesRec = recv(sock, buff, 1, 0);
+	char* bufr = new char[(int)buff[0]];
+	int bytesReceived = recv(sock, bufr, (int)buff[0], 0);
 	if (bytesReceived > 0)
 	{
 		// Echo response to console
-		std::cout << std::string(buf, 0, bytesReceived) << std::endl;
+		std::cout << std::string(bufr, 0, bytesReceived) << std::endl;
 	}
+	delete []bufr;
 	do
 	{
 		/*if (registerd == true)
@@ -145,13 +149,22 @@ int main()
 
 		if (userInput.size() > 0)		// Make sure the user has typed in something
 		{
+			//Send Text Size
+			std::string ResultSize = std::to_string(userInput.size());
+			int sendResultSize = send(sock, ResultSize.c_str(), 1, 0);
+
 			// Send the text
 			int sendResult = send(sock, userInput.c_str(), userInput.size() + 1, 0);
 			if (sendResult != SOCKET_ERROR)
 			{
 				// Wait for response
-				ZeroMemory(buf, 4096);
-				int bytesReceived = recv(sock, buf, 4096, 0);
+				//ZeroMemory(buf, 4096);
+				//char buff[1];
+				ZeroMemory(buff, 1);
+				int bytesRec = recv(sock, buff, 1, 0);
+				char* buf = new char[(int)buff[0]];
+				int bytesReceived = recv(sock, buf, (int)buff[0], 0);
+				//int bytesReceived = recv(sock, buf, 4096, 0);
 				if (bytesReceived > 0)
 				{
 					// Echo response to console
@@ -179,8 +192,8 @@ int main()
 					//std::cout << "RECV failed with error" + WSAGetLastError() << std::endl;
 					DisplayErrorInfo();
 				}
+			delete[]buf;
 			}
-
 		}
 		else if(quit == false)
 		{

@@ -86,16 +86,25 @@ int main()
 				
 				std::string welcomeMsg = "Welcome The Client has Connected to the Server!\n";
 
+
+				std::string wMsgSize = std::to_string(welcomeMsg.size());
+				send(sockClient, wMsgSize.c_str(), 1, 0);
+
 				send(sockClient, welcomeMsg.c_str(), welcomeMsg.size() + 1, 0);
 				writeFile(welcomeMsg);
 			}
 			else
 			{
-				char buff[4096];
-				ZeroMemory(buff, 4096);
+				//char buff[4096];
+				//ZeroMemory(buff, 4096);
+				//Receive Message Size
+				char buf[1];
+				ZeroMemory(buf, 1);
+				int bytesInSize = recv(sock, buf, 1, 0);
+				char* buff = new char[(int)buf[0]];
 
 				// Receive message
-				int bytesIn = recv(sock, buff, 4096, 0);
+				int bytesIn = recv(sock, buff, (int)buf[0], 0);
 				if (bytesIn <= 0)
 				{
 					// Drop the client
@@ -126,6 +135,10 @@ int main()
 
 								ss << "SOCKET #" << outSock << ": " << usernames[i] << " has been removed!" << std::endl;
 								sendMSG = ss.str();
+
+								std::string MsgSize = std::to_string(sendMSG.size());
+								send(sock, MsgSize.c_str(), 1, 0);
+
 								send(sock, sendMSG.c_str(), sendMSG.size() + 1, 0);
 								usernames.erase(std::next(usernames.begin(),i),std::next( usernames.begin(), i));
 								writeFile(sendMSG);
@@ -154,6 +167,10 @@ int main()
 								//}
 							}
 								sendMSG = ss.str();
+
+								std::string MsgSize = std::to_string(sendMSG.size());
+								send(sock, MsgSize.c_str(), 1, 0);
+
 								send(sock, sendMSG.c_str(), sendMSG.size() + 1, 0);
 								writeFile(sendMSG);
 
@@ -163,6 +180,10 @@ int main()
 							std::string logLines;
 							if (readFile(std::ref(logLines)))
 							{
+
+								std::string MsgSize = std::to_string(logLines.size());
+								send(sock, MsgSize.c_str(), 1, 0);
+
 								send(sock, logLines.c_str(), logLines.size() + 1, 0);
 								logLines = "Successfully transfered the Log File! :)\n";
 								//send(sock, logLines.c_str(), logLines.size() + 1, 0);
@@ -171,6 +192,10 @@ int main()
 							else
 							{
 								logLines = "Failed to Open/Read File! :(\n";
+
+								std::string MsgSize = std::to_string(logLines.size());
+								send(sock, MsgSize.c_str(), 1, 0);
+
 								send(sock, logLines.c_str(), logLines.size() + 1, 0);
 								writeFile(logLines);
 							}
@@ -179,10 +204,20 @@ int main()
 						{
 							std::string connected = "\nPlease Enter A Username: ";
 							//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;
+
+							std::string MsgSize = std::to_string(connected.size());
+							send(sock, MsgSize.c_str(), 1, 0);
+
 							send(sock, connected.c_str(), connected.size() + 1, 0);
-							ZeroMemory(buff, 4096);
+							//ZeroMemory(buff, 4096);
 							//char buff[4096];
-							int bytesIn = recv(sock, buff, 4096, 0);
+							//Receive Message Size
+							delete []buff;
+							ZeroMemory(buf, 1);
+							int bytesInSize = recv(sock, buf, 1, 0);
+							char* buff = new char[(int)buf[0]];
+
+							int bytesIn = recv(sock, buff, (int)buf[0], 0);
 							if (bytesIn > 0)
 							{
 								std::string user = std::string(buff, bytesIn);
@@ -193,15 +228,23 @@ int main()
 									//usernames[clientAmount] = user;
 									usernames.push_back(user);
 									clientAmount++;
-									std::string connected = "\nUsername set to " + user;
+									 connected = "\nUsername set to " + user;
 									//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;
+									std::string MsgSize = std::to_string(connected.size());
+									send(sock, MsgSize.c_str(), 1, 0);
+
 									send(sock, connected.c_str(), connected.size() + 1, 0);
 									writeFile(connected);
 								}
 								else
 								{
-									std::string connected = "\nToo many Users Connected! ";
+									connected = "\nToo many Users Connected! ";
 									//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;
+
+									std::string MsgSize = std::to_string(connected.size());
+									send(sock, MsgSize.c_str(), 1, 0);
+
+
 									send(sock, connected.c_str(), connected.size() + 1, 0);
 									writeFile(connected);
 									FD_CLR(sock, &ServerMaster);
@@ -235,6 +278,10 @@ int main()
 
 							ss << "ECHO: SOCKET #" << sock << " "<<usernames[i]<< ": " << buff << "\r\n";
 							 sendMSG = ss.str();
+
+							 std::string MsgSize = std::to_string(sendMSG.size());
+							 send(outSock, MsgSize.c_str(), 1, 0);
+
 							send(outSock, sendMSG.c_str(), sendMSG.size() + 1, 0);
 							writeFile(sendMSG);
 							}
@@ -244,8 +291,8 @@ int main()
 						//}
 					}
 				}
+			delete[]buff;
 			}
-
 		}
 	}
 
@@ -265,6 +312,10 @@ int main()
 		SOCKET sock = ServerMaster.fd_array[0];
 
 		// Send the goodbye message
+
+		std::string MsgSize = std::to_string(LeaveMSG.size());
+		send(sock, MsgSize.c_str(), 1, 0);
+
 		send(sock, LeaveMSG.c_str(), LeaveMSG.size() + 1, 0);
 		writeFile(LeaveMSG);
 		// Remove it from the master file list and close the socket
