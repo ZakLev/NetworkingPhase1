@@ -244,19 +244,14 @@ int main()
 							delete[]buf2;
 						}
 						list = false;
-						/*buff = 0;
-						int bytesRec = recv(sock, (char*)&buff, maxSize, 0);
-						char* buf2 = new char[buff + 1];
-						std::this_thread::sleep_for(std::chrono::milliseconds(50));
-						int bytesReceived = recv(sock, buf2, buff + 1, 0);
-						std::cout << std::string(buf2, 0, bytesReceived) << std::endl;
-						delete[]buf2;
-						buff = 0;*/
+						
 					}
 					else
 					{
-						
-						std::cout << std::string(buf, 0, bytesReceived) << std::endl;
+						std::string line = std::string(buf, 0, bytesReceived);
+						std::cout << line << std::endl;
+						if (line.compare("\nToo many Users Connected!\n"))
+							quit = true;
 					}
 				}
 				else if (bytesReceived == 0)

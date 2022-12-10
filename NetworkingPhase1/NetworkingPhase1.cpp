@@ -63,7 +63,7 @@ int main()
 		DisplayErrorInfo();
 
 	// listening
-	if (listen(lis, SOMAXCONN) == SOCKET_ERROR) // amount to pssible to connect
+	if (listen(lis, 4/*SOMAXCONN*/) == SOCKET_ERROR) // amount to pssible to connect
 		DisplayErrorInfo();
 	
 	fd_set ServerMaster;
@@ -222,32 +222,11 @@ int main()
 
 								send(sock, Msg.c_str(), Msg.size() + 1, 0);
 								
-								if (readSendFile(sock))
+								if (readSendFile(sock))//Send MSG Line by Line
 								{
 
-								//Send Line by line
-								//std::stringstream ss(logLines);
-								//std::string line;
-								/*if (logLines.c_str() != NULL)
-								{
-									std::string line;
-									while (std::getline(ss, line,'\n'))
-									{
-										std::istringstream iss(line);
-										MsgSize = std::to_string(line.size());
-										send(sock, MsgSize.c_str(), 16, 0);
 
-										send(sock, line.c_str(), line.size() + 1, 0);
-									}
-									line = "EOF";
-									MsgSize = std::to_string(line.size());
-									send(sock, MsgSize.c_str(), 16, 0);
-
-									send(sock, line.c_str(), line.size() + 1, 0);
-								}*/
-								
-
-								//Send Complete MSG
+								//Send Completed MSG
 								std::string MSG = "Successfully transfered the Log File! :)\n";
 
 								 MsgSize = std::to_string(MSG.size());
@@ -288,7 +267,7 @@ int main()
 							{
 								std::string user = std::string(buff2, bytesIn);
 								user.erase(user.size() - 1, user.size());
-								if (clientAmount < 5)
+								if (clientAmount < 5)// Max Clients Allowed 3 - the fourth will be kicked 
 								{
 
 									//usernames[clientAmount] = user;
@@ -305,7 +284,7 @@ int main()
 								}
 								else
 								{
-									connected = "\nToo many Users Connected! ";
+									connected = "\nToo many Users Connected!\n";
 									//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;
 
 									std::string MsgSize = std::to_string(connected.size());

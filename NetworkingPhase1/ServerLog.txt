@@ -1,28 +1,44 @@
 Welcome The Client has Connected to the Server!
 
 
-Username set to Boy
+Username set to Kek
 Welcome The Client has Connected to the Server!
 
 
-Username set to Girl
-ECHO: SOCKET #212 Girl: I am Girl
+Username set to Jim
+ECHO: SOCKET #208 Kek: Hi
 
-ECHO: SOCKET #212 Girl: Actually boy but shhh
+Welcome The Client has Connected to the Server!
 
-ECHO: SOCKET #208 Boy: I heard that
 
-0. SOCKET #88: Server
+Username set to Juicy
+ECHO: SOCKET #220 Juicy: I am Juice
 
-1. SOCKET #208: Boy
+0. SOCKET #204: Server
 
-2. SOCKET #212: Girl
+1. SOCKET #208: Kek
 
-0. SOCKET #88: Server
+2. SOCKET #216: Jim
 
-1. SOCKET #212: Girl
+3. SOCKET #220: Juicy
 
-ECHO: SOCKET #212 Girl: Letsssssssssssss Go
+Welcome The Client has Connected to the Server!
 
-SOCKET #212: Girl has been removed!
 
+Username set to Tom
+ECHO: SOCKET #224 Tom: I am Tim
+
+0. SOCKET #204: Server
+
+1. SOCKET #208: Kek
+
+2. SOCKET #216: Jim
+
+3. SOCKET #220: Juicy
+
+4. SOCKET #224: Tom
+
+Welcome The Client has Connected to the Server!
+
+
+Too many Users Connected! 
