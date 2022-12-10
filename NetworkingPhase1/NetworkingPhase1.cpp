@@ -146,7 +146,13 @@ int main()
 								//std::this_thread::sleep_for(std::chrono::milliseconds(50));
 								send(sock, sendMSG.c_str(), sendMSG.size() + 1, 0);
 								//std::this_thread::sleep_for(std::chrono::milliseconds(50));
-								usernames.erase(std::next(usernames.begin(),i),std::next( usernames.begin(), i));
+								usernames.erase(usernames.begin() + i);
+							
+								//usernames.erase(std::next(usernames.begin(),i),std::next( usernames.begin(), i));
+								//usernames.erase(std::remove(usernames.begin(), usernames.end(), i), std::remove(usernames.begin(), usernames.end(), i));
+							
+								/*for (std::string names : usernames)
+									std::cout << names << std::endl;*/
 								writeFile(sendMSG);
 								FD_CLR(sock, &ServerMaster);
 								}

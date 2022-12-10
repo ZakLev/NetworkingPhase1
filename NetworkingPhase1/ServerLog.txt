@@ -1,30 +1,22 @@
 Welcome The Client has Connected to the Server!
 
 
-Username set to Jimmy
-ECHO: SOCKET #208 Jimmy: I am Jimmy
-
+Username set to Ja
 Welcome The Client has Connected to the Server!
 
 
-Username set to Wow
-ECHO: SOCKET #168 Wow: I am Wow
+Username set to Rule
+0. SOCKET #208: Server
 
-0. SOCKET #204: Server
+1. SOCKET #212: Ja
 
-1. SOCKET #208: Jimmy
+2. SOCKET #220: Rule
 
-2. SOCKET #168: Wow
+SOCKET #212: Ja has been removed!
 
-0. SOCKET #204: Server
+0. SOCKET #208: Server
 
-1. SOCKET #208: Jimmy
+1. SOCKET #220: Rule
 
-2. SOCKET #168: Wow
-
-SOCKET #208: Jimmy has been removed!
-
-0. SOCKET #204: Server
-
-1. SOCKET #168: Jimmy
+SOCKET #220: Rule has been removed!
 
