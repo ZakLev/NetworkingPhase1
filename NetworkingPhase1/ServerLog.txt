@@ -1,15 +1,30 @@
 Welcome The Client has Connected to the Server!
 
 
-Username set to How
-ECHO: SOCKET #216 How: Hi
+Username set to Jimmy
+ECHO: SOCKET #208 Jimmy: I am Jimmy
 
-ECHO: SOCKET #216 How: How are you
+Welcome The Client has Connected to the Server!
 
-0. SOCKET #208: Server
-1. SOCKET #216: How
 
-Successfully transfered the Log File! :)
+Username set to Wow
+ECHO: SOCKET #168 Wow: I am Wow
 
-SOCKET #216: How has been removed!
+0. SOCKET #204: Server
+
+1. SOCKET #208: Jimmy
+
+2. SOCKET #168: Wow
+
+0. SOCKET #204: Server
+
+1. SOCKET #208: Jimmy
+
+2. SOCKET #168: Wow
+
+SOCKET #208: Jimmy has been removed!
+
+0. SOCKET #204: Server
+
+1. SOCKET #168: Jimmy
 

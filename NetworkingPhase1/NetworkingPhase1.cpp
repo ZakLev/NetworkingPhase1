@@ -9,11 +9,14 @@
 #include "../definitions.h"
 #include "../platform.h"
 #include <vector>
+#include <thread>
+#include <chrono>
 
 #pragma comment (lib, "ws2_32.lib")
 //std::ifstream inFile;
 //std::ofstream outFile;
 bool readFile(std::string& logLines);
+bool readSendFile(SOCKET sock);
 void writeFile(std::string line);
 void clearFile();
 void DisplayErrorInfo();
@@ -25,6 +28,7 @@ int main()
 	int clientAmount = 1;
 	 std::string ip = "127.0.0.1";			// Server IP Address
 	int port = 3333;
+	int maxSize = 1;
 	std::string sOut;
 	sOut = usernames[0] + ": Waiting For Connection\n" + ip + "\n" + std::to_string(port) + "\n";
 	std::cout << sOut;
@@ -88,7 +92,7 @@ int main()
 
 
 				std::string wMsgSize = std::to_string(welcomeMsg.size());
-				send(sockClient, wMsgSize.c_str(), 1, 0);
+				send(sockClient, wMsgSize.c_str(), maxSize, 0);
 
 				send(sockClient, welcomeMsg.c_str(), welcomeMsg.size() + 1, 0);
 				writeFile(welcomeMsg);
@@ -98,13 +102,14 @@ int main()
 				//char buff[4096];
 				//ZeroMemory(buff, 4096);
 				//Receive Message Size
-				char buf[1];
-				ZeroMemory(buf, 1);
-				int bytesInSize = recv(sock, buf, 1, 0);
-				char* buff = new char[(int)buf[0]];
+				//char buf[1];
+				//ZeroMemory(buf, 1);
+				uint32_t buf = 0;
+				int bytesInSize = recv(sock, (char*)&buf, maxSize, 0);
+				char* buff = new char[buf+1];
 
 				// Receive message
-				int bytesIn = recv(sock, buff, (int)buf[0], 0);
+				int bytesIn = recv(sock, buff, buf+1, 0);
 				if (bytesIn <= 0)
 				{
 					// Drop the client
@@ -137,9 +142,10 @@ int main()
 								sendMSG = ss.str();
 
 								std::string MsgSize = std::to_string(sendMSG.size());
-								send(sock, MsgSize.c_str(), 1, 0);
-
+								send(sock, MsgSize.c_str(), maxSize, 0);
+								//std::this_thread::sleep_for(std::chrono::milliseconds(50));
 								send(sock, sendMSG.c_str(), sendMSG.size() + 1, 0);
+								//std::this_thread::sleep_for(std::chrono::milliseconds(50));
 								usernames.erase(std::next(usernames.begin(),i),std::next( usernames.begin(), i));
 								writeFile(sendMSG);
 								FD_CLR(sock, &ServerMaster);
@@ -152,53 +158,109 @@ int main()
 						}
 						else if (cmd.compare("&getlist") == 0)
 						{
-							
-							std::string sendMSG;
-								std::ostringstream ss;
+							//Send Loading MSG
+							std::string Msg = "Sending List of Users...\n";
+							std::string MsgSize = std::to_string(Msg.size());
+							send(sock, MsgSize.c_str(), maxSize, 0);
+
+							send(sock, Msg.c_str(), Msg.size() + 1, 0);
 							for (int i = 0; i < ServerMaster.fd_count; i++)
 							{
 								SOCKET outSock = ServerMaster.fd_array[i];
 								if (outSock == SOCKET_ERROR)
 									DisplayErrorInfo();
-								/*if (outSock != lis)
-								{*/
+								
 
+							    std::string sendMSG;
+								std::ostringstream ss;
 								ss << i <<". SOCKET #" << outSock << ": " << usernames[i] << std::endl;
 								//}
-							}
 								sendMSG = ss.str();
 
-								std::string MsgSize = std::to_string(sendMSG.size());
-								send(sock, MsgSize.c_str(), 1, 0);
-
+								 MsgSize = std::to_string(sendMSG.size());
+								send(sock, MsgSize.c_str(), maxSize, 0);
+								 std::this_thread::sleep_for(std::chrono::milliseconds(50));
 								send(sock, sendMSG.c_str(), sendMSG.size() + 1, 0);
+								 //std::this_thread::sleep_for(std::chrono::milliseconds(50));
 								writeFile(sendMSG);
+								
+							}
+							//Send EOL MSG
+							 Msg = "EOL";
+							 MsgSize = std::to_string(Msg.size());
+							send(sock, MsgSize.c_str(), maxSize, 0);
+							send(sock, Msg.c_str(), Msg.size() + 1, 0);
+							
 
 						}
 						else if (cmd.compare("&getlog") == 0)
 						{
 							std::string logLines;
-							if (readFile(std::ref(logLines)))
-							{
+							//if (readFile(std::ref(logLines)))
+							//{
+								//Send Loading MSG
+								std::string Msg = "Logging...\n";
+								std::string MsgSize = std::to_string(Msg.size());
+								send(sock, MsgSize.c_str(), maxSize, 0);
 
-								std::string MsgSize = std::to_string(logLines.size());
-								send(sock, MsgSize.c_str(), 1, 0);
+								send(sock, Msg.c_str(), Msg.size() + 1, 0);
+								
+								if (readSendFile(sock))
+								{
 
-								send(sock, logLines.c_str(), logLines.size() + 1, 0);
-								logLines = "Successfully transfered the Log File! :)\n";
+								//Send Line by line
+								//std::stringstream ss(logLines);
+								//std::string line;
+								/*if (logLines.c_str() != NULL)
+								{
+									std::string line;
+									while (std::getline(ss, line,'\n'))
+									{
+										std::istringstream iss(line);
+										MsgSize = std::to_string(line.size());
+										send(sock, MsgSize.c_str(), 16, 0);
+
+										send(sock, line.c_str(), line.size() + 1, 0);
+									}
+									line = "EOF";
+									MsgSize = std::to_string(line.size());
+									send(sock, MsgSize.c_str(), 16, 0);
+
+									send(sock, line.c_str(), line.size() + 1, 0);
+								}*/
+								
+
+								//Send Complete MSG
+								std::string MSG = "Successfully transfered the Log File! :)\n";
+
+								 MsgSize = std::to_string(MSG.size());
+								send(sock, MsgSize.c_str(), maxSize, 0);
+								std::this_thread::sleep_for(std::chrono::milliseconds(50));
+								send(sock, MSG.c_str(), MSG.size() + 1, 0);
 								//send(sock, logLines.c_str(), logLines.size() + 1, 0);
-								writeFile(logLines);
-							}
-							else
+								writeFile(MSG);
+								}
+								else
+								{
+									logLines = "Failed to transfered the Log File! :(\n";
+
+									MsgSize = std::to_string(logLines.size());
+									send(sock, MsgSize.c_str(), maxSize, 0);
+
+									send(sock, logLines.c_str(), logLines.size() + 1, 0);
+									writeFile(logLines);
+								}
+							//}
+							/*else
 							{
 								logLines = "Failed to Open/Read File! :(\n";
 
 								std::string MsgSize = std::to_string(logLines.size());
-								send(sock, MsgSize.c_str(), 1, 0);
+								send(sock, MsgSize.c_str(), 16, 0);
 
 								send(sock, logLines.c_str(), logLines.size() + 1, 0);
 								writeFile(logLines);
-							}
+							}*/
 						}
 						else if (cmd.compare("&register") == 0)
 						{
@@ -206,21 +268,22 @@ int main()
 							//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;
 
 							std::string MsgSize = std::to_string(connected.size());
-							send(sock, MsgSize.c_str(), 1, 0);
+							send(sock, MsgSize.c_str(), maxSize, 0);
 
 							send(sock, connected.c_str(), connected.size() + 1, 0);
 							//ZeroMemory(buff, 4096);
 							//char buff[4096];
 							//Receive Message Size
-							delete []buff;
-							ZeroMemory(buf, 1);
-							int bytesInSize = recv(sock, buf, 1, 0);
-							char* buff = new char[(int)buf[0]];
+							//delete []buff;
+							//ZeroMemory(buf, 1);
+							buf = 0;
+							int bytesInSize = recv(sock, (char*)&buf, maxSize, 0);
+							char* buff2 = new char[buf+1];
 
-							int bytesIn = recv(sock, buff, (int)buf[0], 0);
+							int bytesIn = recv(sock, buff2, buf+1, 0);
 							if (bytesIn > 0)
 							{
-								std::string user = std::string(buff, bytesIn);
+								std::string user = std::string(buff2, bytesIn);
 								user.erase(user.size() - 1, user.size());
 								if (clientAmount < 5)
 								{
@@ -231,7 +294,7 @@ int main()
 									 connected = "\nUsername set to " + user;
 									//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;
 									std::string MsgSize = std::to_string(connected.size());
-									send(sock, MsgSize.c_str(), 1, 0);
+									send(sock, MsgSize.c_str(), maxSize, 0);
 
 									send(sock, connected.c_str(), connected.size() + 1, 0);
 									writeFile(connected);
@@ -242,7 +305,7 @@ int main()
 									//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;
 
 									std::string MsgSize = std::to_string(connected.size());
-									send(sock, MsgSize.c_str(), 1, 0);
+									send(sock, MsgSize.c_str(), maxSize, 0);
 
 
 									send(sock, connected.c_str(), connected.size() + 1, 0);
@@ -253,6 +316,7 @@ int main()
 
 
 							}
+							delete[]buff2;
 						}
 						
 
@@ -280,7 +344,7 @@ int main()
 							 sendMSG = ss.str();
 
 							 std::string MsgSize = std::to_string(sendMSG.size());
-							 send(outSock, MsgSize.c_str(), 1, 0);
+							 send(outSock, MsgSize.c_str(), maxSize, 0);
 
 							send(outSock, sendMSG.c_str(), sendMSG.size() + 1, 0);
 							writeFile(sendMSG);
@@ -314,7 +378,7 @@ int main()
 		// Send the goodbye message
 
 		std::string MsgSize = std::to_string(LeaveMSG.size());
-		send(sock, MsgSize.c_str(), 1, 0);
+		send(sock, MsgSize.c_str(), maxSize, 0);
 
 		send(sock, LeaveMSG.c_str(), LeaveMSG.size() + 1, 0);
 		writeFile(LeaveMSG);
@@ -338,13 +402,9 @@ bool readFile(std::string& logLines)
 	inFile.open("ServerLog.txt");
 	if (inFile.is_open())
 	{
-		//fileRead = true;
 			std::string line;
 		while (std::getline(inFile, line))
 		{
-			//getline(inFile, line);
-		/*for (std::string line; getline(inFile, line);)
-		{*/
 			std::istringstream iss(line);
 			logFile.push_back(line);
 			if (fileRead == false && line.compare("")!=0)
@@ -360,6 +420,48 @@ bool readFile(std::string& logLines)
 			ss << l << std::endl;
 		}
 		logLines = ss.str();
+	}
+	return fileRead;
+}
+bool readSendFile(SOCKET sock)
+{
+	bool fileRead = false;
+	int maxSize = 1;
+	//std::vector<std::string> logFile;
+	std::ifstream inFile;
+	inFile.open("ServerLog.txt");
+	if (inFile.is_open())
+	{
+		std::string line;
+		while (std::getline(inFile, line))
+		{
+			/*if (inFile.eof())
+				break;*/
+			std::istringstream iss(line);
+			if (line.compare("") == 0||line.empty())
+			{
+				line = "\n";
+			}
+			//logFile.push_back(line);
+			std::string MsgSize = std::to_string(line.size());
+			send(sock, MsgSize.c_str(), maxSize, 0);
+			std::this_thread::sleep_for(std::chrono::milliseconds(50));
+			send(sock, line.c_str(), line.size() + 1, 0);
+			std::this_thread::sleep_for(std::chrono::milliseconds(50));
+			if (fileRead == false && line.compare("") != 0)
+			{
+				fileRead = true;
+			}
+			//}
+		}
+		inFile.close();
+		
+		line = "EOF";
+		std::string MsgSize = std::to_string(line.size());
+		send(sock, MsgSize.c_str(), maxSize, 0);
+	
+		send(sock, line.c_str(), line.size() + 1, 0);
+		
 	}
 	return fileRead;
 }
@@ -379,22 +481,8 @@ void writeFile(std::string line)
 	
 	outFile.open("ServerLog.txt",std::ios::app);
 	if (outFile.is_open())
-	{
-		/*std::string read;
-		if (readFile(std::ref(read)))
-		{
-
-		std::ostringstream ss;
-		ss << read << std::endl << line;
-		outFile << ss.str();
-		}
-		else
-		{*/
+	{	
 			outFile << line << std::endl;
-
-		//}
-
-
 
 		outFile.close();
 	}
