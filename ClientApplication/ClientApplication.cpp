@@ -106,7 +106,6 @@ int main()
 			userInput = "&register";
 			forceCall = false;
 		}
-		
 		else {
 
 

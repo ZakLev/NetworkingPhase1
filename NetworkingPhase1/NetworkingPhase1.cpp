@@ -24,7 +24,9 @@ int main()
 {
 	clearFile();
 	std::vector<std::string> usernames;
+	std::vector<SOCKET> userSockets;
 	usernames.push_back("Server");
+	
 	int clientAmount = 1;
 	 std::string ip = "127.0.0.1";			// Server IP Address
 	int port = 3333;
@@ -43,6 +45,7 @@ int main()
     }
 	// Create socket
 	SOCKET lis = socket(AF_INET, SOCK_STREAM, 0);
+	userSockets.push_back(lis);
 	if (lis == INVALID_SOCKET)
 	{
 		sOut = usernames[0] + "Can't create socket, Exit\n";
@@ -147,6 +150,7 @@ int main()
 								send(sock, sendMSG.c_str(), sendMSG.size() + 1, 0);
 								//std::this_thread::sleep_for(std::chrono::milliseconds(50));
 								usernames.erase(usernames.begin() + i);
+								userSockets.erase(userSockets.begin() + i);
 							
 								//usernames.erase(std::next(usernames.begin(),i),std::next( usernames.begin(), i));
 								//usernames.erase(std::remove(usernames.begin(), usernames.end(), i), std::remove(usernames.begin(), usernames.end(), i));
@@ -175,8 +179,14 @@ int main()
 								SOCKET outSock = ServerMaster.fd_array[i];
 								if (outSock == SOCKET_ERROR)
 									DisplayErrorInfo();
-								
-
+								if (outSock != userSockets[i])
+								{
+									usernames.erase(usernames.begin() + i);
+									userSockets.erase(userSockets.begin() + i);
+									i--;
+								}
+								else
+								{
 							    std::string sendMSG;
 								std::ostringstream ss;
 								ss << i <<". SOCKET #" << outSock << ": " << usernames[i] << std::endl;
@@ -189,6 +199,7 @@ int main()
 								send(sock, sendMSG.c_str(), sendMSG.size() + 1, 0);
 								 //std::this_thread::sleep_for(std::chrono::milliseconds(50));
 								writeFile(sendMSG);
+								}
 								
 							}
 							//Send EOL MSG
@@ -256,17 +267,7 @@ int main()
 									send(sock, logLines.c_str(), logLines.size() + 1, 0);
 									writeFile(logLines);
 								}
-							//}
-							/*else
-							{
-								logLines = "Failed to Open/Read File! :(\n";
-
-								std::string MsgSize = std::to_string(logLines.size());
-								send(sock, MsgSize.c_str(), 16, 0);
-
-								send(sock, logLines.c_str(), logLines.size() + 1, 0);
-								writeFile(logLines);
-							}*/
+						
 						}
 						else if (cmd.compare("&register") == 0)
 						{
@@ -277,11 +278,7 @@ int main()
 							send(sock, MsgSize.c_str(), maxSize, 0);
 
 							send(sock, connected.c_str(), connected.size() + 1, 0);
-							//ZeroMemory(buff, 4096);
-							//char buff[4096];
-							//Receive Message Size
-							//delete []buff;
-							//ZeroMemory(buf, 1);
+							
 							buf = 0;
 							int bytesInSize = recv(sock, (char*)&buf, maxSize, 0);
 							char* buff2 = new char[buf+1];
@@ -296,6 +293,7 @@ int main()
 
 									//usernames[clientAmount] = user;
 									usernames.push_back(user);
+									userSockets.push_back(sock);
 									clientAmount++;
 									 connected = "\nUsername set to " + user;
 									//std::cout << sockClient << "Connected on Port: " << ntohs(sockClient.sin_port) << std::endl;

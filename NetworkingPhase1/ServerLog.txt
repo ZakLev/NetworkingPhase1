@@ -1,18 +1,28 @@
 Welcome The Client has Connected to the Server!
 
 
-Username set to Ian
+Username set to Boy
 Welcome The Client has Connected to the Server!
 
 
-Username set to Anothony
-0. SOCKET #200: Server
+Username set to Girl
+ECHO: SOCKET #212 Girl: I am Girl
 
-1. SOCKET #204: Ian
+ECHO: SOCKET #212 Girl: Actually boy but shhh
 
-2. SOCKET #208: Anothony
+ECHO: SOCKET #208 Boy: I heard that
 
-0. SOCKET #200: Server
+0. SOCKET #88: Server
 
-1. SOCKET #208: Ian
+1. SOCKET #208: Boy
+
+2. SOCKET #212: Girl
+
+0. SOCKET #88: Server
+
+1. SOCKET #212: Girl
+
+ECHO: SOCKET #212 Girl: Letsssssssssssss Go
+
+SOCKET #212: Girl has been removed!
 
