@@ -116,7 +116,7 @@ int main()
 				if (bytesIn <= 0)
 				{
 					// Drop the client
-					for (int i = 0; i < userSockets.size(); i++)//Remove From List
+					for (int i = 0; i < userSockets.size(); i++)//Remove Disconnected From List
 					{
 						if (sock == userSockets[i])
 						{
@@ -124,7 +124,7 @@ int main()
 							userSockets.erase(userSockets.begin() + i);
 						}
 					}
-					closesocket(sock);
+					closesocket(sock);//Drop Disconnected Sockets
 					FD_CLR(sock, &ServerMaster);
 				}
 				else
