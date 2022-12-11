@@ -122,6 +122,7 @@ int main()
 						{
 							usernames.erase(usernames.begin() + i);
 							userSockets.erase(userSockets.begin() + i);
+							clientAmount--;
 						}
 					}
 					closesocket(sock);//Drop Disconnected Sockets
@@ -159,6 +160,7 @@ int main()
 								//std::this_thread::sleep_for(std::chrono::milliseconds(50));
 								usernames.erase(usernames.begin() + i);
 								userSockets.erase(userSockets.begin() + i);
+								clientAmount--;
 							
 								//usernames.erase(std::next(usernames.begin(),i),std::next( usernames.begin(), i));
 								//usernames.erase(std::remove(usernames.begin(), usernames.end(), i), std::remove(usernames.begin(), usernames.end(), i));

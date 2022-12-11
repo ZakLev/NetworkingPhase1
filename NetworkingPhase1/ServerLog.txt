@@ -6,9 +6,17 @@ Welcome The Client has Connected to the Server!
 
 
 Username set to Tim
-0. SOCKET #204: Server
+0. SOCKET #200: Server
 
-1. SOCKET #216: Tim
+1. SOCKET #208: Jim
+
+2. SOCKET #216: Tim
 
 SOCKET #216: Tim has been removed!
+
+0. SOCKET #200: Server
+
+1. SOCKET #208: Jim
+
+SOCKET #208: Jim has been removed!
 
