@@ -124,6 +124,7 @@ int main()
 				send(sockClient, wMsgSize.c_str(), maxSize, 0);
 
 				send(sockClient, welcomeMsg.c_str(), welcomeMsg.size() + 1, 0);
+				std::cout << welcomeMsg << std::endl; // Write out on Server
 				writeFile(welcomeMsg);
 			}
 			else
@@ -235,6 +236,7 @@ int main()
 								 std::this_thread::sleep_for(std::chrono::milliseconds(50));
 								send(sock, sendMSG.c_str(), sendMSG.size() + 1, 0);
 								// std::this_thread::sleep_for(std::chrono::milliseconds(50));
+								std::cout << sendMSG << std::endl; // Write out on Server
 								writeFile(sendMSG);
 								}
 								
@@ -271,6 +273,7 @@ int main()
 								std::this_thread::sleep_for(std::chrono::milliseconds(50));
 								send(sock, MSG.c_str(), MSG.size() + 1, 0);
 								//send(sock, logLines.c_str(), logLines.size() + 1, 0);
+								std::cout << MSG << std::endl; // Write out on Server
 								writeFile(MSG);
 								}
 								else
@@ -281,6 +284,7 @@ int main()
 									send(sock, MsgSize.c_str(), maxSize, 0);
 
 									send(sock, logLines.c_str(), logLines.size() + 1, 0);
+									std::cout << logLines << std::endl; // Write out on Server
 									writeFile(logLines);
 								}
 						
@@ -329,6 +333,7 @@ int main()
 									send(sock, MsgSize.c_str(), maxSize, 0);
 
 									send(sock, connected.c_str(), connected.size() + 1, 0);
+									std::cout << connected << std::endl; // Write out on Server
 									writeFile(connected);
 								}
 								else
@@ -341,6 +346,7 @@ int main()
 
 
 									send(sock, connected.c_str(), connected.size() + 1, 0);
+									std::cout << connected << std::endl; // Write out on Server
 									writeFile(connected);
 									FD_CLR(sock, &ServerMaster);
 									
@@ -365,21 +371,24 @@ int main()
 					{
 						SOCKET outSock = ServerMaster.fd_array[i];
 						std::string sendMSG;
+						std::string MSG;
 						//if (outSock != sock )//&& outSock != lis)
 						//{
 							std::ostringstream ss;
-
+							std::ostringstream sss;
 							if (outSock == sock)
 							{
-
+								sss << "SOCKET #" << sock << " "<<usernames[i]<< ": " << buff << "\r\n";
 							ss << "ECHO: SOCKET #" << sock << " "<<usernames[i]<< ": " << buff << "\r\n";
 							 sendMSG = ss.str();
+							 MSG = sss.str();
 
 							 std::string MsgSize = std::to_string(sendMSG.size());
 							 send(outSock, MsgSize.c_str(), maxSize, 0);
 
 							send(outSock, sendMSG.c_str(), sendMSG.size() + 1, 0);
-							writeFile(sendMSG);
+							std::cout << MSG << std::endl; // Write out on Server
+							writeFile(MSG);
 							}
 							if (outSock == SOCKET_ERROR)
 								DisplayErrorInfo();
@@ -413,6 +422,7 @@ int main()
 		send(sock, MsgSize.c_str(), maxSize, 0);
 
 		send(sock, LeaveMSG.c_str(), LeaveMSG.size() + 1, 0);
+		std::cout << LeaveMSG << std::endl; // Write out on Server
 		writeFile(LeaveMSG);
 		// Remove it from the master file list and close the socket
 		FD_CLR(sock, &ServerMaster);
