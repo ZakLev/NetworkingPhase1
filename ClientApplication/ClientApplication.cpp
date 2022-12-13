@@ -31,9 +31,9 @@ int main()
 	std::cout << std::endl;*/
 
 	
-
+	int udpPort = 53;
 	//ip = "127.0.0.1";			// IP of server for testing
-	port = 3333; // port of server for testing
+	//port = 3333; // port of server for testing
 	/*WSAData data;
 	WORD ver = MAKEWORD(2, 2);*/
 	int errorCheck = startup();//WSAStartup(ver, &data);
@@ -50,19 +50,29 @@ int main()
 
 	sockaddr_in sender_addr;
 	sender_addr.sin_family = AF_INET;
-	sender_addr.sin_port = htons(port);
+	sender_addr.sin_port = htons(udpPort);
+	sender_addr.sin_addr.s_addr = INADDR_ANY;
+	//sender_addr.sin_addr = INADDR_BROADCAST;
 	//inet_pton(AF_INET, (PCSTR)INADDR_ANY, &sender_addr.sin_addr);
-	inet_pton(AF_INET, "127.0.0.255", &sender_addr.sin_addr);
+	//inet_pton(AF_INET, "127.0.0.255", &sender_addr.sin_addr);
 	int sender_addrLen = sizeof(sender_addr);
 	if (bind(udpSock, (sockaddr*)&sender_addr, sizeof(sender_addr)) == SOCKET_ERROR)
 		DisplayErrorInfo();
 	//Packet recvdPacket = {};
 	//std::string recvdPacket;
-	char recvdPacket[10];
-	ZeroMemory(recvdPacket, 10);
-	int iResult = recvfrom(udpSock,recvdPacket, 10, 0, (SOCKADDR*)&sender_addr, &sender_addrLen);
+	char recvdPacket[15];
+	ZeroMemory(recvdPacket, 15);
+	int iResult = recvfrom(udpSock,recvdPacket, 15, 0, (SOCKADDR*)&sender_addr, &sender_addrLen);
 	//int iResult = recv(udpSock, recvdPacket,  sizeof(recvdPacket), 0);
-		ip = recvdPacket;
+	std::string ipPort = recvdPacket;
+	ip = ipPort.substr(0, ipPort.find(':'));
+	ipPort.erase(0, ipPort.find(':'));
+	ipPort.erase(0, 1);
+	ipPort.shrink_to_fit();
+	//std::string p = ipPort.substr(0, 4);
+     port = stoi(ipPort);
+	//port = 3333;
+	//	ip = recvdPacket;
 		closesocket(udpSock);
 	//if (iResult < 0)
 	//{

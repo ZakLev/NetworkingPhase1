@@ -30,6 +30,7 @@ int main()
 	int clientAmount = 1;
 	 std::string ip = "127.0.0.1";			// Server IP Address
 	int port = 3333;
+	int udpPort = 53;
 	int maxSize = 1;
 
 	std::string sOut;
@@ -98,18 +99,19 @@ int main()
 
 	FD_SET(lis, &ServerMaster);
 
-	std::string packet = "127.0.0.1";
+	std::string packet = "127.0.0.1:3333";
 	SOCKET udpLIS = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	char broadcast = 1;
 	if (setsockopt(udpLIS, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast)) == SOCKET_ERROR)
 		DisplayErrorInfo();
 	sockaddr_in send_addr;
 	send_addr.sin_family = AF_INET;
-	send_addr.sin_port = htons(port);
-	inet_pton(AF_INET, "127.0.0.255", &send_addr.sin_addr);
+	send_addr.sin_port = htons(udpPort);
+	send_addr.sin_addr.s_addr = INADDR_BROADCAST;
+	//inet_pton(AF_INET, "127.0.0.255", &send_addr.sin_addr);
+	//inet_pton(AF_INET, (PCSTR)INADDR_ANY, &send_addr.sin_addr);
 	//inet_pton(AF_INET, ip.c_str(), &send_addr.sin_addr);
 	//send_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	//inet_pton(AF_INET, (PCSTR)INADDR_ANY, &send_addr.sin_addr);
 	/*if (bind(udpLIS, (sockaddr*)&send_addr, sizeof(send_addr)) == SOCKET_ERROR)
 		DisplayErrorInfo();*/
 	

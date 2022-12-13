@@ -1,22 +1,16 @@
 Welcome The Client has Connected to the Server!
 
-
-Username set to Jim
 Welcome The Client has Connected to the Server!
 
 
+Username set to Jim
+
 Username set to Tim
-0. SOCKET #200: Server
+SOCKET #152 Jim: I am Jim
 
-1. SOCKET #208: Jim
+SOCKET #212 Tim: I am Tim
 
-2. SOCKET #216: Tim
+SOCKET #212: Tim has been removed!
 
-SOCKET #216: Tim has been removed!
-
-0. SOCKET #200: Server
-
-1. SOCKET #208: Jim
-
-SOCKET #208: Jim has been removed!
+SOCKET #152: Jim has been removed!
 
