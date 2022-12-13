@@ -292,7 +292,7 @@ int main()
 	buff = 0;
 	closesocket(sock);
 	WSACleanup();
-	
+	system("pause");
 	//ZeroMemory((char*)&buff, 1);
 	//memset(&buff, 0, sizeof(buff));
 	//free(&buff);
