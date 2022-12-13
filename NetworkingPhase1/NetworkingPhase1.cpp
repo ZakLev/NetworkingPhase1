@@ -44,14 +44,15 @@ int main()
 		std::cout << sOut;
         return 0;
     }
-	//UDP
+	////UDP
 	//std::string packet = "127.0.0.1:3333";
-	//SOCKET udpLIS = socket(AF_INET, SOCK_STREAM, 0);
+	//SOCKET udpLIS = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	//sockaddr_in send_addr;
 	//send_addr.sin_family = AF_INET;
 	//send_addr.sin_port = htons(port);
-	//inet_pton(AF_INET, ip.c_str(), &send_addr.sin_addr);
-	////send_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	////inet_pton(AF_INET, ip.c_str(), &send_addr.sin_addr);
+	////send_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	//inet_pton(AF_INET, (PCSTR)INADDR_ANY, &send_addr.sin_addr);
 	//if (bind(udpLIS, (sockaddr*)&send_addr, sizeof(send_addr)) == SOCKET_ERROR)
 	//	DisplayErrorInfo();
 	//char broadcast = 1;
