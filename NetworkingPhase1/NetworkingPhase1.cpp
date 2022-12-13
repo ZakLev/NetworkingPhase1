@@ -31,6 +31,7 @@ int main()
 	 std::string ip = "127.0.0.1";			// Server IP Address
 	int port = 3333;
 	int maxSize = 1;
+
 	std::string sOut;
 	sOut = usernames[0] + ": Waiting For Connection\n" + ip + "\n" + std::to_string(port) + "\n";
 	std::cout << sOut;
@@ -43,6 +44,30 @@ int main()
 		std::cout << sOut;
         return 0;
     }
+	//UDP
+	//std::string packet = "127.0.0.1:3333";
+	//SOCKET udpLIS = socket(AF_INET, SOCK_STREAM, 0);
+	//sockaddr_in send_addr;
+	//send_addr.sin_family = AF_INET;
+	//send_addr.sin_port = htons(port);
+	//inet_pton(AF_INET, ip.c_str(), &send_addr.sin_addr);
+	////send_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//if (bind(udpLIS, (sockaddr*)&send_addr, sizeof(send_addr)) == SOCKET_ERROR)
+	//	DisplayErrorInfo();
+	//char broadcast = 1;
+	//setsockopt(udpLIS, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast));
+	//int iResult = sendto(udpLIS,
+	//	reinterpret_cast<char*>(&packet),
+	//	sizeof(packet),
+	//	0,
+	//	(SOCKADDR*)&send_addr,
+	//	sizeof(send_addr));
+
+	//if (iResult == SOCKET_ERROR)
+	//{
+	//	printf("Failed to send broadcastmsg\n");
+	//}
+
 	// Create socket
 	SOCKET lis = socket(AF_INET, SOCK_STREAM, 0);
 	userSockets.push_back(lis);
