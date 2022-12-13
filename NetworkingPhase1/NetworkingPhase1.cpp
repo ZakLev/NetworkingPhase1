@@ -193,6 +193,7 @@ int main()
 							
 								/*for (std::string names : usernames)
 									std::cout << names << std::endl;*/
+								std::cout << sendMSG << std::endl; // Write out on Server
 								writeFile(sendMSG);
 								FD_CLR(sock, &ServerMaster);
 								}
