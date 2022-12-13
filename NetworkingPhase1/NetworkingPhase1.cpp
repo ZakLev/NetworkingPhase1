@@ -45,6 +45,7 @@ int main()
         return 0;
     }
 	////UDP
+	//// Mkae After TCP?
 	//std::string packet = "127.0.0.1:3333";
 	//SOCKET udpLIS = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	//sockaddr_in send_addr;
@@ -97,13 +98,42 @@ int main()
 
 	FD_SET(lis, &ServerMaster);
 
+	std::string packet = "127.0.0.1";
+	SOCKET udpLIS = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	char broadcast = 1;
+	if (setsockopt(udpLIS, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast)) == SOCKET_ERROR)
+		DisplayErrorInfo();
+	sockaddr_in send_addr;
+	send_addr.sin_family = AF_INET;
+	send_addr.sin_port = htons(port);
+	inet_pton(AF_INET, "127.0.0.255", &send_addr.sin_addr);
+	//inet_pton(AF_INET, ip.c_str(), &send_addr.sin_addr);
+	//send_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//inet_pton(AF_INET, (PCSTR)INADDR_ANY, &send_addr.sin_addr);
+	/*if (bind(udpLIS, (sockaddr*)&send_addr, sizeof(send_addr)) == SOCKET_ERROR)
+		DisplayErrorInfo();*/
+	
+
 	bool serverOn = true;
 	while (serverOn)
 	{
 			fd_set copyServerMaster = ServerMaster;
 		timeval time = {1,0};
 		int sockCount = select(0, &copyServerMaster, nullptr, nullptr, &time);
+		//UDP
+	// Mkae After TCP?
+		
+	int iResult = sendto(udpLIS,packet.c_str(), sizeof(packet) + 1, 0, (SOCKADDR*)&send_addr, sizeof(send_addr));
 
+	if (iResult == SOCKET_ERROR)
+	{
+		DisplayErrorInfo();
+		//printf("Failed to send broadcastmsg\n");
+	}
+	else
+	{
+		printf("Sent broadcastmsg\n");
+	}
 		for (int i = 0; i < sockCount; i++)
 		{
 			SOCKET sock = copyServerMaster.fd_array[i];

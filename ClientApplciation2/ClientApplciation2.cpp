@@ -22,18 +22,18 @@ int main()
 	std::string name;
 	std::string ip, holdPort;
 	int port;
-	std::cout << "Enter the ip: \n";
+	/*std::cout << "Enter the ip: \n";
 	std::getline(std::cin, ip);
 	std::cout << std::endl;
 	std::cout << "Enter the Port: \n";
 	std::getline(std::cin, holdPort);
 	port = stoi(holdPort);
-	std::cout << std::endl;
+	std::cout << std::endl;*/
 
 
 
 	//ip = "127.0.0.1";			// IP of server for testing
-	//port = 3333; // port of server for testing
+	port = 3333; // port of server for testing
 	/*WSAData data;
 	WORD ver = MAKEWORD(2, 2);*/
 	int errorCheck = startup();//WSAStartup(ver, &data);
@@ -43,6 +43,38 @@ int main()
 		DisplayErrorInfo();
 		return 0;
 	}
+	SOCKET udpSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	char reuse = 1;
+	if (setsockopt(udpSock, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) == SOCKET_ERROR)
+		DisplayErrorInfo();
+
+	sockaddr_in sender_addr;
+	sender_addr.sin_family = AF_INET;
+	sender_addr.sin_port = htons(port);
+	//inet_pton(AF_INET, (PCSTR)INADDR_ANY, &sender_addr.sin_addr);
+	inet_pton(AF_INET, "127.0.0.255", &sender_addr.sin_addr);
+	int sender_addrLen = sizeof(sender_addr);
+	if (bind(udpSock, (sockaddr*)&sender_addr, sizeof(sender_addr)) == SOCKET_ERROR)
+		DisplayErrorInfo();
+	//Packet recvdPacket = {};
+	//std::string recvdPacket;
+	char recvdPacket[10];
+	ZeroMemory(recvdPacket, 10);
+	int iResult = recvfrom(udpSock, recvdPacket, 10, 0, (SOCKADDR*)&sender_addr, &sender_addrLen);
+	//int iResult = recv(udpSock, recvdPacket,  sizeof(recvdPacket), 0);
+	ip = recvdPacket;
+	closesocket(udpSock);
+	//if (iResult < 0)
+	//{
+	//	DisplayErrorInfo();
+	//	/*WSACleanup();
+	//	return 0;*/
+	//	//return recvdPacket;
+	//}
+	//else
+	//{
+	//}
+
 	// Create socket
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET)
@@ -214,7 +246,7 @@ int main()
 						buff = 0;
 						int bytesRec = recv(sock, (char*)&buff, maxSize, 0);
 						char* buf2 = new char[buff + 1];
-						std::this_thread::sleep_for(std::chrono::milliseconds(50));
+						//std::this_thread::sleep_for(std::chrono::milliseconds(50));
 						int bytesReceived = recv(sock, buf2, buff + 1, 0);
 						std::cout << std::string(buf2, 0, bytesReceived) << std::endl;
 						delete[]buf2;
