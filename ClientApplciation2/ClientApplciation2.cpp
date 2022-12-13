@@ -290,6 +290,7 @@ int main()
 
 	// Gracefully close down everything
 	buff = 0;
+	shutdown(sock, SD_SEND);
 	closesocket(sock);
 	WSACleanup();
 	system("pause");
