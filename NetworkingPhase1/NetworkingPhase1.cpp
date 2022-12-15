@@ -352,7 +352,7 @@ int main()
 								//}
 								std::string user = std::string(buff2, bytesIn);
 								user.erase(user.size() - 1, user.size());
-								if (clientAmount < 5)// Max Clients Allowed 3 - the fourth will be kicked 
+								if (clientAmount < 4)// Max Clients Allowed 3 - the fourth will be kicked 
 								{
 
 									//usernames[clientAmount] = user;
