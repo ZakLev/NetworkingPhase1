@@ -437,7 +437,11 @@ int main()
 
 	// Remove the listening socket from the master file descriptor set and close it
 	// to prevent anyone else trying to connect.
+	
 	FD_CLR(lis, &ServerMaster);
+	//shutdown(udpLis, SD_BOTH);
+	shutdown(lis, SD_SEND);
+	closesocket(udpLIS);
 	closesocket(lis);
 
 	// Message to let users know what's happening.
